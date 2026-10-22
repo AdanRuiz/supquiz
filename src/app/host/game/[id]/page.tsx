@@ -128,7 +128,11 @@ export default function Home({
   return (
     <main className="bg-green-600 min-h-screen">
       {currentScreen == AdminScreens.lobby && (
-        <Lobby participants={participants} gameId={gameId}></Lobby>
+        <Lobby
+          participants={participants}
+          gameId={gameId}
+          quizName={quizSet?.name}
+        ></Lobby>
       )}
       {currentScreen == AdminScreens.quiz && (
         <Quiz

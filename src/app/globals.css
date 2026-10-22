@@ -4,9 +4,14 @@
 
 body {
     padding: 0;
-    /* background-color: black;
-    background-image: url('/background.jpg');
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat; */
+}
+
+::selection {
+    background-color: #bbf7d0; /* green-200 */
+    color: #052e16; /* green-950 */
+}
+
+:focus-visible {
+    outline: 3px solid #22c55e; /* green-500 */
+    outline-offset: 2px;
 }
