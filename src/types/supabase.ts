@@ -71,6 +71,7 @@ export type Database = {
           created_at: string
           id: string
           is_correct: boolean
+          order: number
           question_id: string
         }
         Insert: {
@@ -78,6 +79,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_correct?: boolean
+          order?: number
           question_id: string
         }
         Update: {
@@ -85,6 +87,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_correct?: boolean
+          order?: number
           question_id?: string
         }
         Relationships: [
@@ -226,18 +229,21 @@ export type Database = {
       quiz_sets: {
         Row: {
           created_at: string
+          created_by: string | null
           description: string | null
           id: string
           name: string
         }
         Insert: {
           created_at?: string
+          created_by?: string | null
           description?: string | null
           id?: string
           name: string
         }
         Update: {
           created_at?: string
+          created_by?: string | null
           description?: string | null
           id?: string
           name?: string
@@ -265,6 +271,16 @@ export type Database = {
           choices: Json[]
         }
         Returns: undefined
+      }
+      is_staff: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      save_quiz_set: {
+        Args: {
+          payload: Json
+        }
+        Returns: string
       }
     }
     Enums: {
