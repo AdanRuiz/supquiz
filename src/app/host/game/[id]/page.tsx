@@ -126,7 +126,7 @@ export default function Home({
   const [currentQuestionSequence, setCurrentQuestionSequence] = useState(0)
 
   return (
-    <main className="bg-green-600 min-h-screen">
+    <main className="bg-green-700 min-h-screen">
       {currentScreen == AdminScreens.lobby && (
         <Lobby
           participants={participants}
@@ -134,18 +134,23 @@ export default function Home({
           quizName={quizSet?.name}
         ></Lobby>
       )}
-      {currentScreen == AdminScreens.quiz && (
+      {currentScreen != AdminScreens.lobby && !quizSet && (
+        <div className="min-h-screen flex items-center justify-center text-2xl font-semibold text-green-100">
+          Loading questions…
+        </div>
+      )}
+      {currentScreen == AdminScreens.quiz && quizSet && (
         <Quiz
-          question={quizSet!.questions![currentQuestionSequence]}
-          questionCount={quizSet!.questions!.length}
+          question={quizSet.questions[currentQuestionSequence]}
+          questionCount={quizSet.questions.length}
           gameId={gameId}
           participants={participants}
         ></Quiz>
       )}
-      {currentScreen == AdminScreens.result && (
+      {currentScreen == AdminScreens.result && quizSet && (
         <Results
           participants={participants!}
-          quizSet={quizSet!}
+          quizSet={quizSet}
           gameId={gameId}
         ></Results>
       )}

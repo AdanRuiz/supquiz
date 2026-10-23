@@ -25,8 +25,20 @@ const config: Config = {
           '0%, 100%': { opacity: '0.35' },
           '50%': { opacity: '1' },
         },
+        // Reading-time bar before the choices appear
+        drain: {
+          '0%': { transform: 'scaleX(1)' },
+          '100%': { transform: 'scaleX(0)' },
+        },
+        // Podium blocks rise into place on the results screen
+        rise: {
+          '0%': { transform: 'translateY(24px) scaleY(0.4)', opacity: '0' },
+          '100%': { transform: 'translateY(0) scaleY(1)', opacity: '1' },
+        },
       },
       animation: {
+        rise: 'rise 700ms cubic-bezier(0.16, 1, 0.3, 1) both',
+        drain: 'drain 5s linear both',
         'pop-in': 'pop-in 420ms cubic-bezier(0.16, 1, 0.3, 1) both',
         breathe: 'breathe 1.6s ease-in-out infinite',
       },
