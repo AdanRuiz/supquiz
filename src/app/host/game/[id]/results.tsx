@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import Confetti from 'react-confetti'
 import useWindowSize from 'react-use/lib/useWindowSize'
 import BrandMark from '../../brand-mark'
+import Link from 'next/link'
 
 type LoadState = 'loading' | 'ready' | 'error'
 
@@ -63,7 +64,18 @@ export default function Results({
           <BrandMark className="w-7 h-7" />
           SupaQuiz
         </div>
-        <p className="text-green-100 text-lg font-medium truncate">{quizSet.name}</p>
+        <div className="flex items-center gap-5 min-w-0">
+          <p className="hidden sm:block text-green-100 text-lg font-medium truncate">{quizSet.name}</p>
+          <Link
+            href="/host/dashboard"
+            className="shrink-0 inline-flex items-center gap-2 h-11 px-5 rounded-xl bg-white text-green-900 font-bold shadow-[0_8px_24px_-8px_rgba(2,44,22,0.55)] transition-[transform,background-color] hover:bg-green-50 active:scale-[0.98]"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+            Back to dashboard
+          </Link>
+        </div>
       </header>
 
       <main className="flex-grow flex flex-col items-center px-6 lg:px-10 pb-12">
