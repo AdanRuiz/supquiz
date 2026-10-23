@@ -1,4 +1,4 @@
-/** Lines shown to a player after the answer is revealed. One is picked at random. */
+/** Kitten mode: line shown under "Sup?" after a wrong answer. One is picked at random. */
 export const WRONG_PHRASES = [
   'That wasn’t it.',
   'Are you OK?',
@@ -8,8 +8,6 @@ export const WRONG_PHRASES = [
   'Casi, casi.',
   'A la próxima.',
 ]
-
-export const CORRECT_PHRASES = ['Nailed it.']
 
 export const pickRandom = (phrases: string[]) =>
   phrases[Math.floor(Math.random() * phrases.length)]

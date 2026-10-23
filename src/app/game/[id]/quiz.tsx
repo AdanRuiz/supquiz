@@ -1,7 +1,7 @@
 import { QUESTION_ANSWER_TIME, TIME_TIL_CHOICE_REVEAL } from '@/constants'
 import { Choice, Question, supabase } from '@/types/types'
 import { useState, useEffect } from 'react'
-import { CORRECT_PHRASES, pickRandom, WRONG_PHRASES } from '@/lib/feedback-phrases'
+import { pickRandom, WRONG_PHRASES } from '@/lib/feedback-phrases'
 import { KITTEN_IMAGES, randomWrongKitten, useKitten } from '@/lib/kitten'
 import { ColorFormat, CountdownCircleTimer } from 'react-countdown-circle-timer'
 
@@ -34,7 +34,8 @@ export default function Quiz({
   useEffect(() => {
     if (!isAnswerRevealed) return
     setFeedbackPhrase(
-      pickRandom(chosenChoice?.is_correct ? CORRECT_PHRASES : WRONG_PHRASES)
+      // "Sup?" lines are only shown for wrong answers in Kitten mode
+      pickRandom(WRONG_PHRASES)
     )
     setWrongKitten(randomWrongKitten())
     // chosenChoice can't change once the answer is revealed
@@ -234,9 +235,8 @@ export default function Quiz({
             )}
           </div>
           <h2 className="mt-4 text-white text-5xl font-extrabold tracking-tight">
-            {chosenChoice?.is_correct ? 'Sup!' : 'Sup?'}
+            {chosenChoice?.is_correct ? 'Correct' : 'Incorrect'}
           </h2>
-          <p className="mt-2 text-2xl text-white/85">{feedbackPhrase}</p>
         </div>
       )}
 
