@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import '../../globals.css'
 import DashboardShell from './shell'
 
 export const metadata: Metadata = {

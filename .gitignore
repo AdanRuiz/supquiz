@@ -43,3 +43,4 @@ game-sources/
 
 # local Claude Code tooling (skills, agents)
 .claude/
+!.env.example

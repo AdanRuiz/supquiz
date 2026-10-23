@@ -66,46 +66,57 @@ export default function Home({
       setQuizSet(data)
     }
 
-    const setGameListner = async () => {
+    // Subscribe first (synchronously) so the effect can clean it up and no
+    // join is missed between loading the list and listening for new ones.
+    const channel = supabase
+      .channel(`game-host-${gameId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'participants',
+          filter: `game_id=eq.${gameId}`,
+        },
+        (payload) => {
+          const joined = payload.new as Participant
+          setParticipants((currentParticipants) =>
+            currentParticipants.some((p) => p.id === joined.id)
+              ? currentParticipants
+              : [...currentParticipants, joined]
+          )
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'games',
+          filter: `id=eq.${gameId}`,
+        },
+        (payload) => {
+          // start the quiz game
+          const game = payload.new as Game
+          setCurrentQuestionSequence(game.current_question_sequence)
+          setCurrentScreen(game.phase as AdminScreens)
+        }
+      )
+      .subscribe()
+
+    const loadGame = async () => {
       const { data } = await supabase
         .from('participants')
         .select()
         .eq('game_id', gameId)
         .order('created_at')
-      if (data) setParticipants(data)
-
-      supabase
-        .channel('game')
-        .on(
-          'postgres_changes',
-          {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'participants',
-            filter: `game_id=eq.${gameId}`,
-          },
-          (payload) => {
-            setParticipants((currentParticipants) => {
-              return [...currentParticipants, payload.new as Participant]
-            })
-          }
-        )
-        .on(
-          'postgres_changes',
-          {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'games',
-            filter: `id=eq.${gameId}`,
-          },
-          (payload) => {
-            // start the quiz game
-            const game = payload.new as Game
-            setCurrentQuestionSequence(game.current_question_sequence)
-            setCurrentScreen(game.phase as AdminScreens)
-          }
-        )
-        .subscribe()
+      if (data) {
+        // Keep anyone who joined while the list was loading
+        setParticipants((current) => [
+          ...data,
+          ...current.filter((p) => !data.some((d) => d.id === p.id)),
+        ])
+      }
 
       const { data: gameData, error: gameError } = await supabase
         .from('games')
@@ -124,7 +135,11 @@ export default function Home({
     }
 
     getQuestions()
-    setGameListner()
+    loadGame()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
   }, [gameId])
 
   const [currentQuestionSequence, setCurrentQuestionSequence] = useState(0)

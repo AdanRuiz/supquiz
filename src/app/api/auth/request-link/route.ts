@@ -68,7 +68,10 @@ export async function POST(request: Request) {
 
   const apiKey = process.env.BREVO_API_KEY
   const senderEmail = process.env.BREVO_SENDER_EMAIL
-  if (!apiKey || !senderEmail) {
+  const canSendEmail = !!apiKey && !!senderEmail
+  // Without Brevo, local development prints the link to the terminal instead
+  const isLocalDev = process.env.NODE_ENV === 'development'
+  if (!canSendEmail && !isLocalDev) {
     console.error('request-link: BREVO_API_KEY or BREVO_SENDER_EMAIL is not set')
     return NextResponse.json({ error: 'Email is not configured yet.' }, { status: 500 })
   }
@@ -94,15 +97,24 @@ export async function POST(request: Request) {
     hashed_token
   )}&type=${encodeURIComponent(verification_type)}`
 
+  if (!canSendEmail) {
+    console.log(`
+[dev] Account link for ${email} (Brevo not configured):
+${link}
+`)
+    recentRequests.set(email, now)
+    return NextResponse.json({ ok: true })
+  }
+
   const brevoResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
     headers: {
-      'api-key': apiKey,
+      'api-key': apiKey as string,
       'content-type': 'application/json',
       accept: 'application/json',
     },
     body: JSON.stringify({
-      sender: { name: 'SupQuiz', email: senderEmail },
+      sender: { name: 'SupQuiz', email: senderEmail as string },
       to: [{ email }],
       subject: 'Set your SupQuiz password',
       htmlContent: emailHtml(link),
