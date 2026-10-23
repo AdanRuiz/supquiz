@@ -2,6 +2,7 @@ import { QUESTION_ANSWER_TIME, TIME_TIL_CHOICE_REVEAL } from '@/constants'
 import { Choice, Question, supabase } from '@/types/types'
 import { useState, useEffect } from 'react'
 import { CORRECT_PHRASES, pickRandom, WRONG_PHRASES } from '@/lib/feedback-phrases'
+import { KITTEN_IMAGES, randomWrongKitten, useKitten } from '@/lib/kitten'
 import { ColorFormat, CountdownCircleTimer } from 'react-countdown-circle-timer'
 
 export default function Quiz({
@@ -28,11 +29,14 @@ export default function Quiz({
 
   // Pick a fresh line each time an answer is revealed
   const [feedbackPhrase, setFeedbackPhrase] = useState('')
+  const [wrongKitten, setWrongKitten] = useState(KITTEN_IMAGES.wrong[0])
+  const { enabled: isKitten } = useKitten()
   useEffect(() => {
     if (!isAnswerRevealed) return
     setFeedbackPhrase(
       pickRandom(chosenChoice?.is_correct ? CORRECT_PHRASES : WRONG_PHRASES)
     )
+    setWrongKitten(randomWrongKitten())
     // chosenChoice can't change once the answer is revealed
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAnswerRevealed, question.id])
@@ -164,7 +168,32 @@ export default function Quiz({
         </div>
       )}
 
-      {isAnswerRevealed && (
+      {isAnswerRevealed && isKitten && (
+        <div className="flex-grow flex justify-center items-center flex-col px-6 py-4 text-center min-h-0">
+          {chosenChoice?.is_correct ? (
+            // Right answer in Kitten mode: just the happy kitten
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={KITTEN_IMAGES.happy}
+              alt="Happy kitten: correct!"
+              className="w-72 max-w-full h-auto shrink-0 rounded-3xl bg-white p-4 motion-safe:animate-pop-in"
+            />
+          ) : (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={wrongKitten}
+                alt="Kitten reacting to a wrong answer"
+                className="w-64 max-w-full h-auto shrink-0 rounded-3xl bg-white p-4 motion-safe:animate-pop-in"
+              />
+              <h2 className="mt-3 text-white text-4xl font-extrabold tracking-tight">Sup?</h2>
+              <p className="mt-1 text-xl text-white/85">{feedbackPhrase}</p>
+            </>
+          )}
+        </div>
+      )}
+
+      {isAnswerRevealed && !isKitten && (
         <div className="flex-grow flex justify-center items-center flex-col px-6 text-center">
           <div
             className={`text-white rounded-full p-4 motion-safe:animate-pop-in ${

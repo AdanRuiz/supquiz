@@ -12,6 +12,7 @@ import Link from 'next/link'
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 import BrandMark from '../brand-mark'
 import { useStaffUser } from './shell'
+import { useKitten } from '@/lib/kitten'
 
 type LoadState = 'loading' | 'ready' | 'error'
 type Notice = { tone: 'success' | 'error'; text: string } | null
@@ -36,6 +37,7 @@ const iconButtonClass =
 
 export default function Home() {
   const user = useStaffUser()
+  const { enabled: isKitten } = useKitten()
   const [quizSets, setQuizSets] = useState<QuizSet[]>([])
   const [loadState, setLoadState] = useState<LoadState>('loading')
   const [startingId, setStartingId] = useState<string | null>(null)
@@ -74,7 +76,7 @@ export default function Home() {
 
     const { data, error } = await supabase
       .from('games')
-      .insert({ quiz_set_id: quizSetId })
+      .insert({ quiz_set_id: quizSetId, kitten_mode: isKitten })
       .select()
       .single()
 

@@ -5,7 +5,8 @@ import { supabase } from '@/types/types'
 import type { User } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { KittenProvider, readKittenPreference, writeKittenPreference } from '@/lib/kitten'
 import BrandMark from '../brand-mark'
 import Nav from './nav'
 
@@ -22,6 +23,18 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const session = useStaffSession()
   const router = useRouter()
   const [isSigningOut, setIsSigningOut] = useState(false)
+  const [isKitten, setIsKitten] = useState(false)
+
+  useEffect(() => {
+    setIsKitten(readKittenPreference())
+  }, [])
+
+  const toggleKitten = useCallback(() => {
+    setIsKitten((on) => {
+      writeKittenPreference(!on)
+      return !on
+    })
+  }, [])
 
   useEffect(() => {
     if (session.status === 'signed-out') {
@@ -46,6 +59,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   }
 
   return (
+    <KittenProvider enabled={isKitten} onToggle={toggleKitten}>
     <StaffContext.Provider value={session.user}>
       <div className="min-h-dvh bg-green-50 text-gray-900 md:flex">
         <aside className="shrink-0 bg-green-950 text-white md:w-60 md:h-dvh md:sticky md:top-0 flex flex-col">
@@ -87,5 +101,6 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         <main className="flex-grow min-w-0 px-4 py-6 md:px-10 md:py-10">{children}</main>
       </div>
     </StaffContext.Provider>
+    </KittenProvider>
   )
 }

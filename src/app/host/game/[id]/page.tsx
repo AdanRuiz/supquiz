@@ -9,7 +9,8 @@ import {
   QuizSet,
   supabase,
 } from '@/types/types'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { KittenProvider, writeKittenPreference } from '@/lib/kitten'
 import Lobby from './lobby'
 import Quiz from './quiz'
 import Results from './results'
@@ -98,6 +99,7 @@ export default function Home({
         (payload) => {
           // start the quiz game
           const game = payload.new as Game
+          setIsKitten(game.kitten_mode)
           setCurrentQuestionSequence(game.current_question_sequence)
           setCurrentScreen(game.phase as AdminScreens)
         }
@@ -130,6 +132,7 @@ export default function Home({
         return
       }
 
+      setIsKitten(gameData.kitten_mode)
       setCurrentQuestionSequence(gameData.current_question_sequence)
       setCurrentScreen(gameData.phase as AdminScreens)
     }
@@ -144,7 +147,24 @@ export default function Home({
 
   const [currentQuestionSequence, setCurrentQuestionSequence] = useState(0)
 
+  // Hidden Kitten mode lives on the game so every player's phone follows it
+  const [isKitten, setIsKitten] = useState(false)
+  const toggleKitten = useCallback(async () => {
+    const next = !isKitten
+    setIsKitten(next)
+    writeKittenPreference(next)
+    const { error } = await supabase
+      .from('games')
+      .update({ kitten_mode: next })
+      .eq('id', gameId)
+    if (error) {
+      console.error(error)
+      setIsKitten(!next)
+    }
+  }, [isKitten, gameId])
+
   return (
+    <KittenProvider enabled={isKitten} onToggle={toggleKitten}>
     <main className="bg-green-700 min-h-dvh">
       {currentScreen == AdminScreens.lobby && (
         <Lobby
@@ -174,5 +194,6 @@ export default function Home({
         ></Results>
       )}
     </main>
+    </KittenProvider>
   )
 }

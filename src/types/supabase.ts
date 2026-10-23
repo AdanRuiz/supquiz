@@ -107,6 +107,7 @@ export type Database = {
           host_user_id: string | null
           id: string
           is_answer_revealed: boolean
+          kitten_mode: boolean
           phase: string
           quiz_set_id: string
         }
@@ -116,6 +117,7 @@ export type Database = {
           host_user_id?: string | null
           id?: string
           is_answer_revealed?: boolean
+          kitten_mode?: boolean
           phase?: string
           quiz_set_id: string
         }
@@ -125,6 +127,7 @@ export type Database = {
           host_user_id?: string | null
           id?: string
           is_answer_revealed?: boolean
+          kitten_mode?: boolean
           phase?: string
           quiz_set_id?: string
         }

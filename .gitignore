@@ -44,3 +44,6 @@ game-sources/
 # local Claude Code tooling (skills, agents)
 .claude/
 !.env.example
+
+# original kitten artwork (optimized copies live in public/kitten)
+/kitten/

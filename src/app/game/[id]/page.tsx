@@ -6,6 +6,7 @@ import { Choice, Game, Participant, Question, supabase } from '@/types/types'
 import Lobby from './lobby'
 import Quiz from './quiz'
 import BrandMark from '@/app/host/brand-mark'
+import { KITTEN_IMAGES, KittenProvider, useKitten } from '@/lib/kitten'
 
 enum Screens {
   lobby = 'lobby',
@@ -35,6 +36,8 @@ export default function Home({
 
   const [currentQuestionSequence, setCurrentQuestionSequence] = useState(0)
   const [isAnswerRevealed, setIsAnswerRevealed] = useState(false)
+  // Hidden Kitten mode, switched on by the host for this game
+  const [isKitten, setIsKitten] = useState(false)
 
   const getGame = async () => {
     const { data: game } = await supabase
@@ -43,6 +46,7 @@ export default function Home({
       .eq('id', gameId)
       .single()
     if (!game) return
+    setIsKitten(game.kitten_mode)
     setCurrentScreen(game.phase as Screens)
     if (game.phase == Screens.quiz) {
       setCurrentQuestionSequence(game.current_question_sequence)
@@ -81,12 +85,13 @@ export default function Home({
           (payload) => {
             if (!stateRef.current) return
 
-            // start the quiz game
             const game = payload.new as Game
+            setIsKitten(game.kitten_mode)
 
+            // Other updates in the lobby (like Kitten mode) don't start the game
             if (game.phase == 'result') {
               setCurrentScreen(Screens.results)
-            } else {
+            } else if (game.phase == 'quiz') {
               setCurrentScreen(Screens.quiz)
               setCurrentQuestionSequence(game.current_question_sequence)
               setIsAnswerRevealed(game.is_answer_revealed)
@@ -97,12 +102,24 @@ export default function Home({
     }
 
     const gameChannel = setGameListner()
+
+    // Read the mode right away so even the join screen shows it
+    supabase
+      .from('games')
+      .select('kitten_mode')
+      .eq('id', gameId)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) setIsKitten(data.kitten_mode)
+      })
+
     return () => {
       supabase.removeChannel(gameChannel)
     }
   }, [gameId])
 
   return (
+    <KittenProvider enabled={isKitten}>
     <main className="bg-green-700 min-h-dvh">
       {currentScreen == Screens.lobby && (
         <Lobby
@@ -122,6 +139,7 @@ export default function Home({
         <Results participant={participant!} gameId={gameId}></Results>
       )}
     </main>
+    </KittenProvider>
   )
 }
 
@@ -170,6 +188,7 @@ function Results({
   }, [gameId, participant.id])
 
   const isPodium = standing !== null && standing.rank >= 1 && standing.rank <= 3
+  const { enabled: isKitten } = useKitten()
 
   return (
     <div className="min-h-dvh bg-green-700 text-white flex flex-col px-4 py-6">
@@ -200,7 +219,7 @@ function Results({
                 {ordinal(standing.rank)}
               </span>
               <span className={`mt-2 text-sm font-semibold ${isPodium ? 'text-green-700' : 'text-green-300'}`}>
-                of {standing.total} players
+                of {standing.total} {standing.total === 1 ? 'player' : 'players'}
               </span>
             </div>
             <p className="mt-6 text-4xl font-extrabold tabular-nums">
@@ -220,6 +239,15 @@ function Results({
           <p className="mt-6 text-lg text-green-50">
             Check the big screen for the final results.
           </p>
+        )}
+
+        {isKitten && standing?.rank === 1 && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={KITTEN_IMAGES.winner}
+            alt="Science kitten celebrating your win"
+            className="mt-8 w-48 h-auto motion-safe:animate-pop-in"
+          />
         )}
 
         <p className="mt-12 text-2xl font-bold">Thanks for playing!</p>

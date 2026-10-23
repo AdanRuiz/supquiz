@@ -4,6 +4,7 @@ import Confetti from 'react-confetti'
 import useWindowSize from 'react-use/lib/useWindowSize'
 import BrandMark from '../../brand-mark'
 import Link from 'next/link'
+import { KITTEN_IMAGES, useKitten } from '@/lib/kitten'
 
 type LoadState = 'loading' | 'ready' | 'error'
 
@@ -27,6 +28,7 @@ export default function Results({
   const [gameResults, setGameResults] = useState<GameResult[]>([])
   const [loadState, setLoadState] = useState<LoadState>('loading')
   const [reduceMotion, setReduceMotion] = useState(false)
+  const { enabled: isKitten } = useKitten()
 
   const { width, height } = useWindowSize()
 
@@ -58,7 +60,7 @@ export default function Results({
   const rest = gameResults.slice(3)
 
   return (
-    <div className="min-h-dvh bg-green-700 text-white flex flex-col">
+    <div className="relative min-h-dvh bg-green-700 text-white flex flex-col overflow-x-hidden">
       <header className="flex items-center justify-between gap-4 px-6 lg:px-10 py-5">
         <div className="flex items-center gap-2 font-bold text-xl tracking-tight">
           <BrandMark className="w-7 h-7" />
@@ -164,6 +166,14 @@ export default function Results({
               </li>
             ))}
           </ol>
+        )}
+        {isKitten && loadState === 'ready' && topThree.length > 0 && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={KITTEN_IMAGES.winner}
+            alt="Science kitten celebrating the winner"
+            className="mt-8 w-56 h-auto drop-shadow-[0_12px_24px_rgba(2,44,22,0.45)] motion-safe:animate-pop-in"
+          />
         )}
       </main>
 
