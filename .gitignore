@@ -40,3 +40,6 @@ next-env.d.ts
 
 # local game source files
 game-sources/
+
+# local Claude Code tooling (skills, agents)
+.claude/
