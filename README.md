@@ -195,4 +195,4 @@ SupQuiz started as a fork of [supabase-community/kahoot-alternative](https://git
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE). Third-party code, icons and fonts are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
