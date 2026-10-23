@@ -56,7 +56,7 @@ export default function Home({
     getQuestions(game.quiz_set_id)
   }
 
-  const getQuestions = async (quizSetId: string) => {
+  const getQuestions = async (quizSetId: string, retries = 5) => {
     const { data, error } = await supabase
       .from('questions')
       .select(`*, choices(*)`)
@@ -64,7 +64,10 @@ export default function Home({
       .order('order', { ascending: true })
       .order('order', { ascending: true, referencedTable: 'choices' })
     if (error) {
-      getQuestions(quizSetId)
+      // Back off instead of retrying in a tight loop
+      if (retries > 0) {
+        setTimeout(() => getQuestions(quizSetId, retries - 1), 1000 * (6 - retries))
+      }
       return
     }
     setQuestions(data)

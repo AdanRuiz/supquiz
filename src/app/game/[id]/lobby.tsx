@@ -1,5 +1,5 @@
 import { Participant, supabase } from '@/types/types'
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useRef, useState } from 'react'
 import BrandMark from '@/app/host/brand-mark'
 
 export default function Lobby({
@@ -12,8 +12,18 @@ export default function Lobby({
   const [participant, setParticipant] = useState<Participant | null>(null)
   // True while we check whether this device already joined this game
   const [isChecking, setIsChecking] = useState(true)
+  const [connectError, setConnectError] = useState(false)
+  const [attempt, setAttempt] = useState(0)
+
+  // The parent passes a new callback on every render. Keep it in a ref so the
+  // effect below runs once per game, not on every render (that used to loop
+  // forever and flood Supabase with requests).
+  const onRegisterCompletedRef = useRef(onRegisterCompleted)
+  onRegisterCompletedRef.current = onRegisterCompleted
 
   useEffect(() => {
+    let cancelled = false
+
     const fetchParticipant = async () => {
       let userId: string | null = null
 
@@ -28,8 +38,11 @@ export default function Lobby({
         userId = data?.user?.id ?? null
       }
 
+      if (cancelled) return
+
       if (!userId) {
         setIsChecking(false)
+        setConnectError(true)
         return
       }
 
@@ -40,6 +53,7 @@ export default function Lobby({
         .eq('user_id', userId)
         .maybeSingle()
 
+      if (cancelled) return
       setIsChecking(false)
 
       if (error) {
@@ -49,12 +63,21 @@ export default function Lobby({
 
       if (participantData) {
         setParticipant(participantData)
-        onRegisterCompleted(participantData)
+        onRegisterCompletedRef.current(participantData)
       }
     }
 
-    fetchParticipant()
-  }, [gameId, onRegisterCompleted])
+    fetchParticipant().catch((error) => {
+      console.error(error)
+      if (cancelled) return
+      setIsChecking(false)
+      setConnectError(true)
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [gameId, attempt])
 
   return (
     <div className="min-h-dvh bg-green-700 text-white flex flex-col px-4 py-6">
@@ -71,7 +94,27 @@ export default function Lobby({
             </p>
           )}
 
-          {!isChecking && !participant && (
+          {!isChecking && connectError && (
+            <div className="text-center">
+              <p className="text-lg text-green-50">
+                Couldn’t connect to the game. Check your connection and try
+                again.
+              </p>
+              <button
+                type="button"
+                className="mt-6 w-full rounded-xl bg-white text-green-800 font-bold py-3"
+                onClick={() => {
+                  setConnectError(false)
+                  setIsChecking(true)
+                  setAttempt((n) => n + 1)
+                }}
+              >
+                Try again
+              </button>
+            </div>
+          )}
+
+          {!isChecking && !connectError && !participant && (
             <Register
               gameId={gameId}
               onRegisterCompleted={(participant) => {
