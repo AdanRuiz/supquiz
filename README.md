@@ -14,7 +14,7 @@ An open-source, real-time quiz game for the classroom, in the spirit of Kahoot. 
 
 - **Live games:** questions, a countdown and answer stats on the host screen; players answer on their phones. Faster correct answers score more points.
 - **Host accounts:** hosts sign in with email and password. Sign-up is limited to one email domain (`@tec.mx` by default), and new accounts are confirmed through a one-time emailed link.
-- **Quiz management:** create, edit and delete quizzes from the dashboard, with 2 to 4 answers per question and one or more correct answers.
+- **Quiz management:** create, edit and delete quizzes from the dashboard, with 2 to 4 answers per question and one or more correct answers. The editor shows one question at a time and saves it when you move to the next one (`>`), or add a new one (`+`). The pencil button switches the question to an editable JSON view.
 - **Import and export:** move quizzes in and out as JSON files ([format below](#quiz-json-format)).
 - **Players need no account:** they join anonymously with a nickname.
 
@@ -31,6 +31,19 @@ An open-source, real-time quiz game for the classroom, in the spirit of Kahoot. 
 - [Next.js 14](https://nextjs.org/) (App Router) and [Tailwind CSS](https://tailwindcss.com/)
 - [Supabase](https://supabase.com/): Postgres, Auth, Realtime and row-level security
 - [Brevo](https://www.brevo.com/) for transactional email (account links)
+
+## Architecture
+
+![SupQuiz architecture](docs/architecture.drawio.svg)
+
+The diagram source is [`docs/architecture.drawio`](docs/architecture.drawio). The `.drawio.svg` file also opens and edits in [draw.io](https://app.diagrams.net/).
+
+- **Vercel** serves the Next.js app. Pages render in the browser, and the only server code is one API route that sends account emails.
+- **Browsers talk to Supabase directly** with `supabase-js`, using the public anon key plus the user's session. Row-level security decides what each one can do: players (anonymous) can join games and answer, and hosts (`@tec.mx` accounts) can manage quizzes and run games.
+- **Realtime** pushes database changes over WebSockets: the big screen sees players join and answer, and phones follow the game as it moves between phases and questions.
+- **Quizzes are saved through `save_quiz_set()`**, a Postgres function that validates the whole quiz in one transaction and keeps question and answer ids stable, so past results stay linked after edits.
+- **Host accounts** are created by the API route: it asks Supabase Auth for a one-time link (with the service role key, server-side only) and sends it with Brevo. A database trigger rejects any account outside the allowed domain.
+- **Deploys:** pushing to `main` on GitHub deploys to Vercel. Database changes live in `supabase/migrations` and are applied with `supabase db push`.
 
 ## Run locally
 

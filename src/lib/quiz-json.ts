@@ -106,16 +106,60 @@ export const validateDraft = (draft: QuizDraft): string[] => {
     problems.push(`A quiz can have up to ${MAX_QUESTIONS} questions.`)
 
   draft.questions.forEach((question, index) => {
-    const label = `Question ${index + 1}`
-    if (!question.body.trim()) problems.push(`${label} has no text.`)
-    if (question.choices.length < MIN_CHOICES || question.choices.length > MAX_CHOICES)
-      problems.push(`${label} needs between ${MIN_CHOICES} and ${MAX_CHOICES} answers.`)
-    if (question.choices.some((choice) => !choice.body.trim()))
-      problems.push(`${label} has an empty answer.`)
-    if (!question.choices.some((choice) => choice.is_correct))
-      problems.push(`${label} needs at least one correct answer.`)
+    problems.push(...validateQuestion(question, `Question ${index + 1}`))
   })
   return problems
+}
+
+/** Problems with a single question; empty means it can be saved. */
+export const validateQuestion = (question: QuizQuestionDraft, label = 'This question') => {
+  const problems: string[] = []
+  if (!question.body.trim()) problems.push(`${label} has no text.`)
+  if (question.choices.length < MIN_CHOICES || question.choices.length > MAX_CHOICES)
+    problems.push(`${label} needs between ${MIN_CHOICES} and ${MAX_CHOICES} answers.`)
+  if (question.choices.some((choice) => !choice.body.trim()))
+    problems.push(`${label} has an empty answer.`)
+  if (!question.choices.some((choice) => choice.is_correct))
+    problems.push(`${label} needs at least one correct answer.`)
+  return problems
+}
+
+/** One question as editable JSON (no database ids). */
+export const questionToJson = (question: QuizQuestionDraft) =>
+  JSON.stringify(
+    {
+      body: question.body,
+      choices: question.choices.map(({ body, is_correct }) => ({ body, is_correct })),
+    },
+    null,
+    2
+  )
+
+/**
+ * Parse the JSON of one question. Throws with a readable message when the
+ * shape is wrong; content rules (empty text, correct answer…) are checked
+ * separately by validateQuestion.
+ */
+export const parseQuestionJson = (text: string): QuizQuestionDraft => {
+  let data: unknown
+  try {
+    data = JSON.parse(text)
+  } catch {
+    throw new Error('This isn’t valid JSON yet.')
+  }
+  if (!isObject(data)) throw new Error('Expected an object with "body" and "choices".')
+  if (typeof data.body !== 'string') throw new Error('"body" must be text.')
+  if (!Array.isArray(data.choices)) throw new Error('"choices" must be a list.')
+  if (data.choices.length > MAX_CHOICES)
+    throw new Error(`A question can have up to ${MAX_CHOICES} answers.`)
+  return {
+    body: data.body,
+    choices: data.choices.map((choice, index) => {
+      if (!isObject(choice) || typeof choice.body !== 'string')
+        throw new Error(`Answer ${index + 1} needs a "body" text.`)
+      return { body: choice.body, is_correct: choice.is_correct === true }
+    }),
+  }
 }
 
 /** What the save_quiz_set RPC expects. */
