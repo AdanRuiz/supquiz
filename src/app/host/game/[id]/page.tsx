@@ -133,6 +133,7 @@ export default function Home({
       }
 
       setIsKitten(gameData.kitten_mode)
+      setGameCode(gameData.code)
       setCurrentQuestionSequence(gameData.current_question_sequence)
       setCurrentScreen(gameData.phase as AdminScreens)
     }
@@ -149,6 +150,7 @@ export default function Home({
 
   // Hidden Kitten mode lives on the game so every player's phone follows it
   const [isKitten, setIsKitten] = useState(false)
+  const [gameCode, setGameCode] = useState<string>()
   const toggleKitten = useCallback(async () => {
     const next = !isKitten
     setIsKitten(next)
@@ -170,6 +172,7 @@ export default function Home({
         <Lobby
           participants={participants}
           gameId={gameId}
+          gameCode={gameCode}
           quizName={quizSet?.name}
         ></Lobby>
       )}

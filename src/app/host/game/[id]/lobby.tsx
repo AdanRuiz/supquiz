@@ -6,19 +6,28 @@ import BrandMark from '../../brand-mark'
 export default function Lobby({
   participants: participants,
   gameId,
+  gameCode,
   quizName,
 }: {
   participants: Participant[]
   gameId: string
+  /** Short code like K7M3QX; the join link becomes /g/K7M3QX */
+  gameCode?: string
   quizName?: string
 }) {
   const { Canvas } = useQRCode()
 
   // Build the join URL from the current domain so the QR works on any deployment
   const [joinUrl, setJoinUrl] = useState('')
+  const [siteHost, setSiteHost] = useState('')
   useEffect(() => {
-    setJoinUrl(`${window.location.origin}/game/${gameId}`)
-  }, [gameId])
+    setSiteHost(window.location.host)
+    setJoinUrl(
+      gameCode
+        ? `${window.location.origin}/g/${gameCode}`
+        : `${window.location.origin}/game/${gameId}`
+    )
+  }, [gameId, gameCode])
 
   const [isStarting, setIsStarting] = useState(false)
   const [startError, setStartError] = useState<string | null>(null)
@@ -86,13 +95,27 @@ export default function Lobby({
               <div className="w-full h-full rounded-xl bg-gray-100 animate-pulse" />
             )}
           </div>
-          {displayUrl && (
+          {gameCode && siteHost ? (
             <div className="mt-6 w-full">
-              <p className="text-green-300 text-sm font-medium">or go to</p>
-              <p className="mt-1 text-lg font-semibold break-all leading-snug select-all">
-                {displayUrl}
+              <p className="text-green-200 text-base">
+                or go to <span className="font-semibold text-white">{siteHost}</span> and enter
+              </p>
+              <p
+                className="mt-2 font-mono text-5xl font-extrabold tracking-[0.2em] select-all"
+                aria-label={`Game code ${gameCode.split('').join(' ')}`}
+              >
+                {gameCode}
               </p>
             </div>
+          ) : (
+            displayUrl && (
+              <div className="mt-6 w-full">
+                <p className="text-green-300 text-sm font-medium">or go to</p>
+                <p className="mt-1 text-lg font-semibold break-all leading-snug select-all">
+                  {displayUrl}
+                </p>
+              </div>
+            )
           )}
         </section>
 

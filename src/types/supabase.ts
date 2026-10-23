@@ -102,6 +102,7 @@ export type Database = {
       }
       games: {
         Row: {
+          code: string
           created_at: string
           current_question_sequence: number
           host_user_id: string | null
@@ -112,6 +113,7 @@ export type Database = {
           quiz_set_id: string
         }
         Insert: {
+          code?: string
           created_at?: string
           current_question_sequence?: number
           host_user_id?: string | null
@@ -122,6 +124,7 @@ export type Database = {
           quiz_set_id: string
         }
         Update: {
+          code?: string
           created_at?: string
           current_question_sequence?: number
           host_user_id?: string | null

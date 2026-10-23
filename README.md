@@ -16,12 +16,12 @@ An open-source, real-time quiz game for the classroom, in the spirit of Kahoot. 
 - **Host accounts:** hosts sign in with email and password. Sign-up is limited to one email domain (`@tec.mx` by default), and new accounts are confirmed through a one-time emailed link.
 - **Quiz management:** create, edit and delete quizzes from the dashboard, with 2 to 4 answers per question and one or more correct answers. The editor shows one question at a time and saves it when you move to the next one (`>`), or add a new one (`+`). The pencil button switches the question to an editable JSON view.
 - **Import and export:** move quizzes in and out as JSON files ([format below](#quiz-json-format)).
-- **Players need no account:** they join anonymously with a nickname.
+- **Players need no account:** they join anonymously with a nickname, using a short game code (6 characters without look-alike letters) or the QR code.
 
 ## How a game works
 
 1. The host signs in and clicks **Start game** on a quiz. The game opens in a new tab: put it on the big screen.
-2. Players scan the QR code (or type the URL) and pick a nickname.
+2. Players scan the QR code, or open the site and type the 6-character game code shown on the big screen (like `K7M3QX`), then pick a nickname. The short link is `/g/<code>`.
 3. The host starts the game. Each question shows for 5 seconds, then the answers appear and players have 20 seconds.
 4. After each question, the host sees how many picked each answer, and players see whether they got it right.
 5. At the end, the host screen shows the podium and every player sees their place and score.
@@ -72,7 +72,7 @@ npm run dev
 
 Open [http://localhost:3000/host/login](http://localhost:3000/host/login), choose **Create an account** and enter an `@tec.mx` address. Without Brevo configured, the account link is printed in the `npm run dev` terminal: open it, choose a password, and you're in the dashboard.
 
-Players join at `http://<your-computer-ip>:3000/game/<game-id>` (the lobby shows the QR and the exact URL). To join from a phone, open the host page using your computer's network IP instead of `localhost`.
+Players join at `http://<your-computer-ip>:3000` with the game code, or at `/g/<code>` (the lobby shows both the QR and the code). To join from a phone, open the host page using your computer's network IP instead of `localhost`.
 
 ## Deploy
 

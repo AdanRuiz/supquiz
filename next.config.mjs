@@ -5,15 +5,11 @@ const nextConfig = {
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   async redirects() {
     return [
-      {
-        source: '/',
-        destination: '/host/dashboard',
-        permanent: true,
-      },
+      // "/" is the player join page, so only /host redirects
       {
         source: '/host',
         destination: '/host/dashboard',
-        permanent: true,
+        permanent: false,
       },
     ]
   },
