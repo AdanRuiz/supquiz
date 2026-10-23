@@ -2,8 +2,24 @@
 
 import { QuizSet, supabase } from '@/types/types'
 import { useCallback, useEffect, useState } from 'react'
+import BrandMark from '../brand-mark'
 
 type LoadState = 'loading' | 'ready' | 'error'
+
+// Quiz covers cycle through the answer colors
+const COVER_COLORS = [
+  'bg-red-500 text-white',
+  'bg-blue-500 text-white',
+  'bg-yellow-400 text-yellow-950',
+  'bg-green-500 text-green-950',
+]
+
+const STEPS = [
+  { label: 'Pick a quiz', color: 'bg-red-500 text-white' },
+  { label: 'Show it on the big screen', color: 'bg-blue-500 text-white' },
+  { label: 'Players scan and join', color: 'bg-yellow-400 text-yellow-950' },
+  { label: 'Start the game', color: 'bg-green-400 text-green-950' },
+]
 
 export default function Home() {
   const [quizSets, setQuizSets] = useState<QuizSet[]>([])
@@ -67,39 +83,63 @@ export default function Home() {
   }
 
   return (
-    <div className="max-w-3xl">
-      <div className="flex items-baseline justify-between gap-4 mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">Quiz sets</h1>
+    <div className="max-w-4xl">
+      {/* Intro band: what hosting a game looks like */}
+      <section className="relative overflow-hidden rounded-3xl bg-green-700 text-white px-6 py-7 md:px-8 md:py-8 shadow-[0_16px_40px_-20px_rgba(2,44,22,0.7)]">
+        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Host a game</h1>
+        <p className="mt-2 max-w-xl text-green-50 text-base md:text-lg">
+          Pick a quiz below. It opens in a new tab: put that tab on the big screen
+          and players join by scanning the code with their phones.
+        </p>
+        <ol className="relative mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold">
+          {STEPS.map((step, i) => (
+            <li key={step.label} className="flex items-center gap-2">
+              <span className={`w-6 h-6 rounded-md grid place-items-center text-xs font-extrabold ${step.color}`}>
+                {i + 1}
+              </span>
+              {step.label}
+            </li>
+          ))}
+        </ol>
+        {/* Oversized brand mark as a quiet backdrop */}
+        <div className="pointer-events-none absolute -right-14 -top-14 opacity-[0.12] hidden lg:block" aria-hidden="true">
+          <BrandMark className="w-56 h-56" />
+        </div>
+      </section>
+
+      <div className="mt-10 mb-4 flex items-baseline justify-between gap-4">
+        <h2 className="text-xl font-bold tracking-tight text-green-950">Quiz sets</h2>
         {loadState === 'ready' && quizSets.length > 0 && (
-          <p className="text-sm text-gray-500 tabular-nums">
+          <p className="text-sm font-medium text-green-800/70 tabular-nums">
             {quizSets.length} {quizSets.length === 1 ? 'set' : 'sets'}
           </p>
         )}
       </div>
 
       {loadState === 'loading' && (
-        <ul className="divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white" aria-busy="true" aria-label="Loading quiz sets">
+        <ul className="space-y-3" aria-busy="true" aria-label="Loading quiz sets">
           {[0, 1, 2].map((i) => (
-            <li key={i} className="flex items-center gap-4 px-5 py-5">
+            <li key={i} className="flex items-center gap-4 rounded-2xl bg-white p-4 ring-1 ring-green-900/5">
+              <div className="w-16 h-16 rounded-xl bg-green-100 animate-pulse" />
               <div className="flex-grow space-y-2">
-                <div className="h-4 w-1/3 rounded bg-gray-200 animate-pulse" />
-                <div className="h-3 w-1/5 rounded bg-gray-100 animate-pulse" />
+                <div className="h-4 w-1/3 rounded bg-green-100 animate-pulse" />
+                <div className="h-3 w-1/2 rounded bg-green-50 animate-pulse" />
               </div>
-              <div className="h-10 w-28 rounded-lg bg-gray-100 animate-pulse" />
+              <div className="h-11 w-32 rounded-xl bg-green-100 animate-pulse" />
             </li>
           ))}
         </ul>
       )}
 
       {loadState === 'error' && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-5 py-6">
+        <div className="rounded-2xl bg-red-50 ring-1 ring-red-200 px-5 py-6">
           <p className="font-semibold text-red-900">Couldn’t load your quiz sets.</p>
           <p className="mt-1 text-sm text-red-800">
             Check your connection to Supabase, then try again.
           </p>
           <button
             onClick={getQuizSets}
-            className="mt-4 h-9 px-4 rounded-lg bg-white border border-red-200 text-sm font-semibold text-red-900 hover:bg-red-100 transition-colors"
+            className="mt-4 h-9 px-4 rounded-lg bg-white ring-1 ring-red-200 text-sm font-semibold text-red-900 hover:bg-red-100 transition-colors"
           >
             Try again
           </button>
@@ -107,9 +147,9 @@ export default function Home() {
       )}
 
       {loadState === 'ready' && quizSets.length === 0 && (
-        <div className="rounded-xl border border-dashed border-gray-300 bg-white px-5 py-12 text-center">
-          <p className="font-semibold">No quiz sets yet</p>
-          <p className="mt-1 text-sm text-gray-600">
+        <div className="rounded-2xl border-2 border-dashed border-green-300 bg-white/60 px-5 py-12 text-center">
+          <p className="font-semibold text-green-950">No quiz sets yet</p>
+          <p className="mt-1 text-sm text-green-900/70">
             Add questions to the <code className="font-mono text-[0.9em]">quiz_sets</code> table
             (or run the seed) and they’ll show up here.
           </p>
@@ -117,33 +157,47 @@ export default function Home() {
       )}
 
       {loadState === 'ready' && quizSets.length > 0 && (
-        <ul className="divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white">
-          {quizSets.map((quizSet) => {
+        <ul className="space-y-3">
+          {quizSets.map((quizSet, index) => {
             const isStarting = startingId === quizSet.id
             const questionCount = quizSet.questions.length
+            const cover = COVER_COLORS[index % COVER_COLORS.length]
             const error =
               startError?.quizSetId === quizSet.id ? startError.message : null
             return (
               <li
                 key={quizSet.id}
-                className="px-5 py-4 transition-colors hover:bg-gray-50/70"
+                className="rounded-2xl bg-white p-4 ring-1 ring-green-900/5 shadow-[0_2px_8px_-4px_rgba(2,44,22,0.12)] transition-shadow hover:shadow-[0_10px_24px_-12px_rgba(2,44,22,0.3)]"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-                  <div className="flex-grow min-w-0">
-                    <h2 className="font-semibold text-gray-900 [text-wrap:balance]">
-                      {quizSet.name}
-                    </h2>
-                    {quizSet.description && (
-                      <p className="mt-0.5 text-sm text-gray-600 line-clamp-2">
-                        {quizSet.description}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
+                  <div className="flex items-center gap-4 flex-grow min-w-0">
+                    <div
+                      className={`w-16 h-16 shrink-0 rounded-xl flex flex-col items-center justify-center ${cover}`}
+                      aria-hidden="true"
+                    >
+                      <span className="text-2xl font-extrabold leading-none tabular-nums">
+                        {questionCount}
+                      </span>
+                      <span className="mt-1 text-[0.6rem] font-bold uppercase tracking-wide opacity-80">
+                        {questionCount === 1 ? 'question' : 'questions'}
+                      </span>
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-green-950 [text-wrap:balance]">
+                        {quizSet.name}
+                      </h3>
+                      {quizSet.description && (
+                        <p className="mt-0.5 text-sm text-gray-600 line-clamp-2">
+                          {quizSet.description}
+                        </p>
+                      )}
+                      <p className="sr-only">
+                        {questionCount} {questionCount === 1 ? 'question' : 'questions'}
                       </p>
-                    )}
-                    <p className="mt-1 text-sm text-gray-500 tabular-nums">
-                      {questionCount} {questionCount === 1 ? 'question' : 'questions'}
-                    </p>
+                    </div>
                   </div>
                   <button
-                    className="inline-flex items-center justify-center gap-2 h-10 px-4 shrink-0 self-start sm:self-center rounded-lg bg-green-600 text-white text-sm font-semibold shadow-sm transition-colors hover:bg-green-700 active:bg-green-800 disabled:cursor-not-allowed disabled:bg-green-600/60"
+                    className="inline-flex items-center justify-center gap-2 h-11 px-5 shrink-0 sm:self-center rounded-xl bg-green-600 text-white text-sm font-bold shadow-sm transition-[background-color,transform] hover:bg-green-700 active:scale-[0.98] active:bg-green-800 disabled:cursor-not-allowed disabled:bg-green-600/50"
                     onClick={() => startGame(quizSet.id)}
                     disabled={startingId !== null || questionCount === 0}
                   >
@@ -166,7 +220,7 @@ export default function Home() {
                   </button>
                 </div>
                 {error && (
-                  <p role="alert" className="mt-2 text-sm text-red-700">
+                  <p role="alert" className="mt-3 text-sm font-medium text-red-700">
                     {error}
                   </p>
                 )}
@@ -174,12 +228,6 @@ export default function Home() {
             )
           })}
         </ul>
-      )}
-
-      {loadState === 'ready' && quizSets.length > 0 && (
-        <p className="mt-4 text-sm text-gray-500">
-          The game opens in a new tab. Put it on the big screen so players can scan the code.
-        </p>
       )}
     </div>
   )

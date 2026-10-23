@@ -45,10 +45,10 @@ export default function Nav() {
               <Link
                 href={item.href}
                 aria-current={isActive ? 'page' : undefined}
-                className={`flex items-center gap-3 h-10 px-3 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center gap-3 h-10 px-3 rounded-lg text-sm font-semibold transition-colors ${
                   isActive
-                    ? 'bg-green-50 text-green-800'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-white/10 text-white'
+                    : 'text-green-200 hover:bg-white/5 hover:text-white'
                 }`}
               >
                 <svg
