@@ -3,7 +3,7 @@ import '../../globals.css'
 import DashboardShell from './shell'
 
 export const metadata: Metadata = {
-  title: 'SupaQuiz',
+  title: 'SupQuiz',
   description: 'Fun quiz game powered by Supabase',
 }
 

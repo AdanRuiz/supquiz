@@ -22,9 +22,9 @@ const emailHtml = (link: string) => `<!doctype html>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px">
     <tr><td align="center">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#ffffff;border-radius:16px;overflow:hidden">
-        <tr><td style="background:#15803d;padding:24px 28px;color:#ffffff;font-size:20px;font-weight:800">SupaQuiz</td></tr>
+        <tr><td style="background:#15803d;padding:24px 28px;color:#ffffff;font-size:20px;font-weight:800">SupQuiz</td></tr>
         <tr><td style="padding:28px">
-          <p style="margin:0 0 12px;font-size:18px;font-weight:700">Set your SupaQuiz password</p>
+          <p style="margin:0 0 12px;font-size:18px;font-weight:700">Set your SupQuiz password</p>
           <p style="margin:0 0 24px;font-size:15px;line-height:1.5;color:#14532d">
             Open the link below to finish creating your host account, or to choose a new password if you already have one.
           </p>
@@ -39,7 +39,7 @@ const emailHtml = (link: string) => `<!doctype html>
 </body></html>`
 
 const emailText = (link: string) =>
-  `Set your SupaQuiz password\n\nOpen this link to finish creating your host account, or to choose a new password if you already have one:\n\n${link}\n\nThe link works once and expires soon. If you didn't ask for this, you can ignore this email.\n`
+  `Set your SupQuiz password\n\nOpen this link to finish creating your host account, or to choose a new password if you already have one:\n\n${link}\n\nThe link works once and expires soon. If you didn't ask for this, you can ignore this email.\n`
 
 export async function POST(request: Request) {
   let email = ''
@@ -102,9 +102,9 @@ export async function POST(request: Request) {
       accept: 'application/json',
     },
     body: JSON.stringify({
-      sender: { name: 'SupaQuiz', email: senderEmail },
+      sender: { name: 'SupQuiz', email: senderEmail },
       to: [{ email }],
-      subject: 'Set your SupaQuiz password',
+      subject: 'Set your SupQuiz password',
       htmlContent: emailHtml(link),
       textContent: emailText(link),
     }),

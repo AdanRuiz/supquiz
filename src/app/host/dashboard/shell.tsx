@@ -55,7 +55,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
               className="flex items-center gap-2.5 rounded-md font-extrabold text-xl tracking-tight"
             >
               <BrandMark className="w-7 h-7" />
-              SupaQuiz
+              SupQuiz
             </Link>
             <button
               onClick={signOut}

@@ -14,7 +14,7 @@ export default function AuthLayout({
     <div className="min-h-dvh bg-green-700 flex flex-col px-4 py-8">
       <div className="flex items-center justify-center gap-2.5 text-white font-extrabold text-xl tracking-tight">
         <BrandMark className="w-7 h-7" />
-        SupaQuiz
+        SupQuiz
       </div>
       <div className="flex-grow flex items-center justify-center py-8">
         <div className="w-full max-w-sm rounded-3xl bg-white p-7 shadow-[0_24px_48px_-16px_rgba(2,44,22,0.6)]">

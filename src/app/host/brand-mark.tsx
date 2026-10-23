@@ -1,4 +1,4 @@
-// The four answer colors as the SupaQuiz mark
+// The four answer colors as the SupQuiz mark
 export default function BrandMark({ className = 'w-6 h-6' }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden="true">

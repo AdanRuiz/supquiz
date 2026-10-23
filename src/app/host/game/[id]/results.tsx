@@ -62,7 +62,7 @@ export default function Results({
       <header className="flex items-center justify-between gap-4 px-6 lg:px-10 py-5">
         <div className="flex items-center gap-2 font-bold text-xl tracking-tight">
           <BrandMark className="w-7 h-7" />
-          SupaQuiz
+          SupQuiz
         </div>
         <div className="flex items-center gap-5 min-w-0">
           <p className="hidden sm:block text-green-100 text-lg font-medium truncate">{quizSet.name}</p>

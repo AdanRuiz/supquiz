@@ -1,6 +1,7 @@
 import { QUESTION_ANSWER_TIME, TIME_TIL_CHOICE_REVEAL } from '@/constants'
 import { Choice, Question, supabase } from '@/types/types'
 import { useState, useEffect } from 'react'
+import { CORRECT_PHRASES, pickRandom, WRONG_PHRASES } from '@/lib/feedback-phrases'
 import { ColorFormat, CountdownCircleTimer } from 'react-countdown-circle-timer'
 
 export default function Quiz({
@@ -24,6 +25,17 @@ export default function Quiz({
     setChosenChoice(null)
     setHasShownChoices(false)
   }, [question.id])
+
+  // Pick a fresh line each time an answer is revealed
+  const [feedbackPhrase, setFeedbackPhrase] = useState('')
+  useEffect(() => {
+    if (!isAnswerRevealed) return
+    setFeedbackPhrase(
+      pickRandom(chosenChoice?.is_correct ? CORRECT_PHRASES : WRONG_PHRASES)
+    )
+    // chosenChoice can't change once the answer is revealed
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAnswerRevealed, question.id])
 
   const answer = async (choice: Choice) => {
     setChosenChoice(choice)
@@ -153,12 +165,9 @@ export default function Quiz({
       )}
 
       {isAnswerRevealed && (
-        <div className="flex-grow flex justify-center items-center flex-col">
-          <h2 className="text-white text-2xl text-center pb-2">
-            {chosenChoice?.is_correct ? 'Correct' : 'Incorrect'}
-          </h2>
+        <div className="flex-grow flex justify-center items-center flex-col px-6 text-center">
           <div
-            className={`text-white rounded-full p-4  ${
+            className={`text-white rounded-full p-4 motion-safe:animate-pop-in ${
               chosenChoice?.is_correct ? 'bg-green-500' : 'bg-red-500'
             }`}
           >
@@ -195,6 +204,10 @@ export default function Quiz({
               </svg>
             )}
           </div>
+          <h2 className="mt-4 text-white text-5xl font-extrabold tracking-tight">
+            {chosenChoice?.is_correct ? 'Sup!' : 'Sup?'}
+          </h2>
+          <p className="mt-2 text-2xl text-white/85">{feedbackPhrase}</p>
         </div>
       )}
 

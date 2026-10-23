@@ -175,7 +175,7 @@ function Results({
     <div className="min-h-dvh bg-green-700 text-white flex flex-col px-4 py-6">
       <div className="flex items-center justify-center gap-2 font-bold text-lg tracking-tight">
         <BrandMark className="w-6 h-6" />
-        SupaQuiz
+        SupQuiz
       </div>
 
       <div className="flex-grow flex flex-col items-center justify-center text-center py-8 max-w-sm w-full mx-auto">

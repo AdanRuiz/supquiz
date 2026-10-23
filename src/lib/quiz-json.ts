@@ -4,7 +4,7 @@ import type { QuizSet } from '@/types/types'
  * Portable quiz format used for export and import.
  *
  * {
- *   "format": "supaquiz.quiz.v1",
+ *   "format": "supquiz.quiz.v1",
  *   "name": "My quiz",
  *   "description": "Optional",
  *   "questions": [
@@ -15,7 +15,7 @@ import type { QuizSet } from '@/types/types'
  *   ]
  * }
  */
-export const QUIZ_FORMAT = 'supaquiz.quiz.v1'
+export const QUIZ_FORMAT = 'supquiz.quiz.v1'
 
 export const MAX_QUESTIONS = 100
 export const MIN_CHOICES = 2
