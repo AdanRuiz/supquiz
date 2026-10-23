@@ -57,7 +57,7 @@ export default function Lobby({
   }, [gameId, onRegisterCompleted])
 
   return (
-    <div className="min-h-[100dvh] bg-green-700 text-white flex flex-col px-4 py-6">
+    <div className="min-h-dvh bg-green-700 text-white flex flex-col px-4 py-6">
       <div className="flex items-center justify-center gap-2 font-bold text-lg tracking-tight">
         <BrandMark className="w-6 h-6" />
         SupaQuiz

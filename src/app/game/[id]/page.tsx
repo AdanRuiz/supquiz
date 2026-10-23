@@ -102,7 +102,7 @@ export default function Home({
   }, [gameId])
 
   return (
-    <main className="bg-green-700 min-h-screen">
+    <main className="bg-green-700 min-h-dvh">
       {currentScreen == Screens.lobby && (
         <Lobby
           onRegisterCompleted={onRegisterCompleted}
@@ -171,7 +171,7 @@ function Results({
   const isPodium = standing !== null && standing.rank >= 1 && standing.rank <= 3
 
   return (
-    <div className="min-h-[100dvh] bg-green-700 text-white flex flex-col px-4 py-6">
+    <div className="min-h-dvh bg-green-700 text-white flex flex-col px-4 py-6">
       <div className="flex items-center justify-center gap-2 font-bold text-lg tracking-tight">
         <BrandMark className="w-6 h-6" />
         SupaQuiz

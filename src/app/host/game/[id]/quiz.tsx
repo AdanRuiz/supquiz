@@ -120,7 +120,7 @@ export default function Quiz({
   const maxCount = Math.max(1, ...question.choices.map((c) => countFor(c.id)))
 
   return (
-    <div className="min-h-screen flex flex-col bg-green-950 text-white">
+    <div className="min-h-dvh flex flex-col bg-green-950 text-white">
       {/* Top bar: progress and the host's one action */}
       <header className="px-6 lg:px-10 pt-5">
         <div className="flex items-center justify-between gap-4 min-h-[3.5rem]">

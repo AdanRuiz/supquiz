@@ -45,7 +45,7 @@ export default function Lobby({
   const displayUrl = joinUrl.replace(/^https?:\/\//, '')
 
   return (
-    <div className="min-h-screen bg-green-700 text-white flex flex-col">
+    <div className="min-h-dvh bg-green-700 text-white flex flex-col">
       <header className="flex items-center justify-between gap-4 px-6 lg:px-10 py-5">
         <div className="flex items-center gap-2 font-bold text-xl tracking-tight">
           <BrandMark className="w-7 h-7" />

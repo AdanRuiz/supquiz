@@ -15,3 +15,16 @@ body {
     outline: 3px solid #22c55e; /* green-500 */
     outline-offset: 2px;
 }
+
+/* Full-height that matches the visible area on mobile (100vh includes the
+   browser bars, which made screens ~15% too tall). 100vh is the fallback. */
+@layer utilities {
+    .h-dvh {
+        height: 100vh;
+        height: 100dvh;
+    }
+    .min-h-dvh {
+        min-height: 100vh;
+        min-height: 100dvh;
+    }
+}

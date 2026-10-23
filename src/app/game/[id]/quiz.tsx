@@ -52,9 +52,9 @@ export default function Quiz({
   }
 
   return (
-    <div className="h-screen flex flex-col items-stretch bg-slate-900 relative">
+    <div className="h-dvh flex flex-col items-stretch bg-slate-900 relative overflow-y-auto">
       <div className="text-center">
-        <h2 className="pb-4 text-2xl bg-white font-bold mx-4 my-12 p-4 rounded inline-block md:text-3xl md:px-24">
+        <h2 className="pb-4 text-2xl bg-white font-bold mx-4 my-6 md:my-12 p-4 rounded inline-block md:text-3xl md:px-24">
           {question.body}
         </h2>
       </div>
@@ -76,6 +76,7 @@ export default function Quiz({
             }}
             isPlaying
             duration={TIME_TIL_CHOICE_REVEAL / 1000}
+            size={120}
             colors={['#fff', '#fff', '#fff', '#fff']}
             trailColor={'transparent' as ColorFormat}
             colorsTime={[7, 5, 2, 0]}

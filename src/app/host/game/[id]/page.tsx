@@ -126,7 +126,7 @@ export default function Home({
   const [currentQuestionSequence, setCurrentQuestionSequence] = useState(0)
 
   return (
-    <main className="bg-green-700 min-h-screen">
+    <main className="bg-green-700 min-h-dvh">
       {currentScreen == AdminScreens.lobby && (
         <Lobby
           participants={participants}
@@ -135,7 +135,7 @@ export default function Home({
         ></Lobby>
       )}
       {currentScreen != AdminScreens.lobby && !quizSet && (
-        <div className="min-h-screen flex items-center justify-center text-2xl font-semibold text-green-100">
+        <div className="min-h-dvh flex items-center justify-center text-2xl font-semibold text-green-100">
           Loading questions…
         </div>
       )}
