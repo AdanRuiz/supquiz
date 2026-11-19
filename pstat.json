@@ -8,28 +8,25 @@
     "subcategory": null,
     "repo": "AdanRuiz/supquiz",
     "priority": "media",
-    "tags": []
+    "tags": [
+      "mantenimiento"
+    ]
   },
   "status": {
-    "state": "bloqueado",
-    "updated": "2026-11-19T11:42:04-06:00",
+    "state": "pausado",
+    "updated": "2026-11-19T13:47:25-06:00",
     "updatedBy": "claude"
   },
   "resume": {
-    "summary": "En producción en supquiz.vercel.app. Nueva función lista en la rama feat/random-wrong-answer-cards: al fallar, el jugador ve al azar una de 3 cartas «Nope» o la X roja. Falta llevarla a main.",
-    "pausedAt": "Push de la rama feat/random-wrong-answer-cards hecho; además se generó el quiz local sistemas-distribuidos-llmops-quiz.json (TC3005B) y quedó pendiente decidir si se agregan más preguntas del PDF de Cloud Native/Kubernetes.",
+    "summary": "En mantenimiento: estable en producción en supquiz.vercel.app con las cartas «Nope» aleatorias. Sin desarrollo activo; solo correcciones y quizzes nuevos cuando se necesiten.",
+    "pausedAt": "Cartas «Nope» desplegadas en producción (main abe6f9c) y verificadas; proyecto pasado a mantenimiento.",
     "nextStep": {
-      "action": "Activar los issues del repo, luego hacer merge de feat/random-wrong-answer-cards a main y verificar en producción.",
+      "action": "Atender correcciones o cargar quizzes nuevos cuando haga falta para clase.",
       "issue": null
     },
-    "blockers": [
-      {
-        "description": "El repo AdanRuiz/supquiz tiene los issues deshabilitados en GitHub (hasIssuesEnabled=false); no se pueden crear issues para los pendientes.",
-        "issue": null
-      }
-    ],
+    "blockers": [],
     "lastSession": {
-      "date": "2026-11-19T11:42:04-06:00",
+      "date": "2026-11-19T13:47:25-06:00",
       "claudeSessionId": "0554690e-8c41-4785-93b5-1e6bd087625a"
     }
   },
@@ -54,6 +51,11 @@
     ]
   },
   "log": [
+    {
+      "date": "2026-11-19T13:47:25-06:00",
+      "summary": "Merge de feat/random-wrong-answer-cards a main y despliegue verificado en supquiz.vercel.app (las 3 cartas responden 200). Proyecto pasa a mantenimiento.",
+      "issues": []
+    },
     {
       "date": "2026-11-19T11:42:04-06:00",
       "summary": "Cartas «Nope» aleatorias al fallar (3 nuevas + X roja), commit 3a79cbe en rama feat/random-wrong-answer-cards con push. Quiz local de 10 preguntas de sistemas distribuidos y LLMOps para TC3005B. Sin issues: siguen deshabilitados.",
