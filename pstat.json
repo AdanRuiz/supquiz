@@ -1,0 +1,67 @@
+{
+  "$schema": "https://raw.githubusercontent.com/OWNER/pStat/main/schema/pstat.schema.json",
+  "version": 1,
+  "project": {
+    "name": "kahoot-alternative",
+    "description": "SupQuiz: juego de quiz en tiempo real para el salón, al estilo Kahoot (Next.js, Vercel).",
+    "category": "Educación",
+    "subcategory": null,
+    "repo": "AdanRuiz/supquiz",
+    "priority": "media",
+    "tags": []
+  },
+  "status": {
+    "state": "bloqueado",
+    "updated": "2026-11-19T11:42:04-06:00",
+    "updatedBy": "claude"
+  },
+  "resume": {
+    "summary": "En producción en supquiz.vercel.app. Nueva función lista en la rama feat/random-wrong-answer-cards: al fallar, el jugador ve al azar una de 3 cartas «Nope» o la X roja. Falta llevarla a main.",
+    "pausedAt": "Push de la rama feat/random-wrong-answer-cards hecho; además se generó el quiz local sistemas-distribuidos-llmops-quiz.json (TC3005B) y quedó pendiente decidir si se agregan más preguntas del PDF de Cloud Native/Kubernetes.",
+    "nextStep": {
+      "action": "Activar los issues del repo, luego hacer merge de feat/random-wrong-answer-cards a main y verificar en producción.",
+      "issue": null
+    },
+    "blockers": [
+      {
+        "description": "El repo AdanRuiz/supquiz tiene los issues deshabilitados en GitHub (hasIssuesEnabled=false); no se pueden crear issues para los pendientes.",
+        "issue": null
+      }
+    ],
+    "lastSession": {
+      "date": "2026-11-19T11:42:04-06:00",
+      "claudeSessionId": "0554690e-8c41-4785-93b5-1e6bd087625a"
+    }
+  },
+  "milestones": [],
+  "closure": {
+    "checklist": [
+      {
+        "item": "Todos los issues cerrados",
+        "done": false,
+        "auto": "issues-closed"
+      },
+      {
+        "item": "Sin cambios sin commit ni commits sin push",
+        "done": false,
+        "auto": "git-clean"
+      },
+      {
+        "item": "Issues activados y backlog registrado",
+        "done": false,
+        "issue": null
+      }
+    ]
+  },
+  "log": [
+    {
+      "date": "2026-11-19T11:42:04-06:00",
+      "summary": "Cartas «Nope» aleatorias al fallar (3 nuevas + X roja), commit 3a79cbe en rama feat/random-wrong-answer-cards con push. Quiz local de 10 preguntas de sistemas distribuidos y LLMOps para TC3005B. Sin issues: siguen deshabilitados.",
+      "issues": []
+    },
+    {
+      "date": "2026-11-15T14:57:34-06:00",
+      "summary": "Estado inicial generado por pStat a partir de la última sesión de Claude, git e issues."
+    }
+  ]
+}
