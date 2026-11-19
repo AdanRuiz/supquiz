@@ -9,5 +9,5 @@ export const WRONG_PHRASES = [
   'A la próxima.',
 ]
 
-export const pickRandom = (phrases: string[]) =>
-  phrases[Math.floor(Math.random() * phrases.length)]
+export const pickRandom = <T,>(items: readonly T[]): T =>
+  items[Math.floor(Math.random() * items.length)]

@@ -5,6 +5,11 @@ import { pickRandom, WRONG_PHRASES } from '@/lib/feedback-phrases'
 import { KITTEN_IMAGES, randomWrongKitten, useKitten } from '@/lib/kitten'
 import { ColorFormat, CountdownCircleTimer } from 'react-countdown-circle-timer'
 
+// Wrong answer (normal mode): one of these cards, or the classic red X, picked at random
+const NOPE_IMAGES = [1, 2, 3].map((n) => `/nope/nope${n}.webp`)
+const CLASSIC_WRONG = null
+const WRONG_OPTIONS: (string | null)[] = [...NOPE_IMAGES, CLASSIC_WRONG]
+
 export default function Quiz({
   question: question,
   questionCount: questionCount,
@@ -30,7 +35,17 @@ export default function Quiz({
   // Pick a fresh line each time an answer is revealed
   const [feedbackPhrase, setFeedbackPhrase] = useState('')
   const [wrongKitten, setWrongKitten] = useState(KITTEN_IMAGES.wrong[0])
+  const [wrongNope, setWrongNope] = useState<string | null>(CLASSIC_WRONG)
   const { enabled: isKitten } = useKitten()
+
+  // Warm the cache so the card shows instantly on reveal
+  useEffect(() => {
+    NOPE_IMAGES.forEach((src) => {
+      const image = new Image()
+      image.src = src
+    })
+  }, [])
+
   useEffect(() => {
     if (!isAnswerRevealed) return
     setFeedbackPhrase(
@@ -38,6 +53,7 @@ export default function Quiz({
       pickRandom(WRONG_PHRASES)
     )
     setWrongKitten(randomWrongKitten())
+    setWrongNope(pickRandom(WRONG_OPTIONS))
     // chosenChoice can't change once the answer is revealed
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAnswerRevealed, question.id])
@@ -194,7 +210,18 @@ export default function Quiz({
         </div>
       )}
 
-      {isAnswerRevealed && !isKitten && (
+      {isAnswerRevealed && !isKitten && !chosenChoice?.is_correct && wrongNope && (
+        <div className="flex-grow flex justify-center items-center flex-col px-6 py-4 text-center min-h-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={wrongNope}
+            alt="Incorrect"
+            className="max-h-full w-72 max-w-full h-auto min-h-0 object-contain rounded-3xl motion-safe:animate-pop-in"
+          />
+        </div>
+      )}
+
+      {isAnswerRevealed && !isKitten && (chosenChoice?.is_correct || !wrongNope) && (
         <div className="flex-grow flex justify-center items-center flex-col px-6 text-center">
           <div
             className={`text-white rounded-full p-4 motion-safe:animate-pop-in ${
